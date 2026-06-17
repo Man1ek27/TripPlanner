@@ -171,7 +171,7 @@
             if (osrmData.code !== "Ok") throw new Error("Błąd routingu OSRM.");
             const segCoords = osrmData.routes[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
             if (i === 0) allCoords.push(...segCoords);
-            else allCoords.push(...segCoords.slice(1)); // unikaj duplikatu punktu łączącego
+            else allCoords.push(...segCoords.slice(1));
           }
 
           polyline = L.polyline(allCoords, { color: "#4f46e5", weight: 5 }).addTo(map);

@@ -23,7 +23,7 @@ Poniżej mapowanie wymagań zaliczeniowych na elementy projektu:
 - W sekcji 5 przedstawiono kluczowe zapytania Cypher wykorzystywane przez aplikację.
 
 4. Dokumentacja z diagramami UML i opisem wdrożenia
-- W sekcji 6 znajdują się diagramy PlantUML (model pojęciowy i przepływ komponentów).
+- W sekcji 6 znajdują się diagramy UML zapisane w składni Mermaid (model pojęciowy i przepływ komponentów).
 - W sekcji 2 zawarto profesjonalny opis wdrożenia środowiska i uruchomienia projektu.
 
 ## 2. Wdrożenie i uruchomienie (Docker Compose + WSL)
@@ -160,43 +160,40 @@ CALL {
 }
 ```
 
-## 6. Diagramy UML (PlantUML)
+## 6. Diagramy UML (Mermaid)
 
 ### 6.1 Diagram pojęciowy (ER)
-```plantuml
-@startuml
-entity "Location" as Location {
-  * name : string
-  --
-  lat : float
-  lng : float
-  description : string
-}
+```mermaid
+erDiagram
+    Location {
+        string name PK
+        float lat
+        float lng
+        string description
+    }
 
-entity "Category" as Category {
-  * name : string
-}
+    Category {
+        string name PK
+    }
 
-Location }o--|| Category : BELONGS_TO
-Location ||--o{ Location : ROAD_TO\n(distance_km, duration_min)
-@enduml
+    Location }o--|| Category : BELONGS_TO
+    Location ||--o{ Location : ROAD_TO
 ```
 
 ### 6.2 Diagram komponentów/przepływu (SPA -> REST -> Neo4j)
-```plantuml
-@startuml
-actor User
-participant "SPA (index.html)" as SPA
-participant "FastAPI (main.py)" as API
-database "Neo4j" as DB
+```mermaid
+sequenceDiagram
+    actor User
+    participant SPA as SPA (index.html)
+    participant API as FastAPI (main.py)
+    participant DB as Neo4j
 
-User -> SPA : Wybiera start/koniec/kategorię
-SPA -> API : POST /api/route
-API -> DB : Cypher (dobor trasy)
-DB --> API : Punkty trasy + dystans
-API --> SPA : JSON
-SPA --> User : Wizualizacja trasy
-@enduml
+    User->>SPA: Wybiera start, koniec i kategorię
+    SPA->>API: POST /api/route
+    API->>DB: Cypher (dobór trasy)
+    DB-->>API: Punkty trasy i dystans
+    API-->>SPA: JSON
+    SPA-->>User: Wizualizacja trasy
 ```
 
 ## 7. Struktura kodu źródłowego
